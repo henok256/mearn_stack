@@ -11,7 +11,7 @@ const PORT = 3001;
 app.get('/getUsers', async (req, res)=>{
    
     try{
-        const users = await UserModel.find();
+        const users = await UserModel.find({});
         res.json(users);
     }
     catch (error){
@@ -22,18 +22,16 @@ app.get('/getUsers', async (req, res)=>{
 app.post('/createUser', async (req, res)=>{
     try{
         
-        const newUser = new UserModel(user);
+        const newUser = new UserModel(req.body);
         await newUser.save();
-  
-        res.json(user);
+        res.json(newUser);
     }
     catch (error){
         res.status(500).send(error);
     }
-      
-      
+    
 });
-app.delete('/users/:id', async (req, res)=>{
+app.delete('/deleteUser/:id', async (req, res)=>{
     const _id = req.params.id;
     try{
         const user= await UserModel.findByIdAndDelete({_id})
@@ -52,6 +50,20 @@ app.delete('/users/:id', async (req, res)=>{
        res.status(500).send(error)
     }
 });
+
+app.put('/update/:id', async (req, res)=>{
+    const _id=req.params.id;
+    const user = await UserModel.findOneAndUpdate({_id},{
+        name:req.body.name,
+        age:req.body.age,
+        username:req.body.username
+    })
+    if(user){
+        res.status(200).json(user);
+    } else{
+        res.status(404).send()
+    }
+})
 
 
 app.listen(PORT, ()=>{
