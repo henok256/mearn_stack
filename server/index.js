@@ -9,7 +9,6 @@ app.use(cors());
 const PORT = 3001;
 
 app.get('/getUsers', async (req, res)=>{
-   
     try{
         const users = await UserModel.find({});
         res.json(users);
